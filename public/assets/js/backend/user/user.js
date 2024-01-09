@@ -31,7 +31,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'email', title: __('Email'), operate: 'LIKE'},
                         {field: 'mobile', title: __('Mobile'), operate: 'LIKE'},
                         {field: 'avatar', title: __('Avatar'), events: Table.api.events.image, formatter: Table.api.formatter.image, operate: false},
-                        {field: 'level', title: __('Level'), operate: 'BETWEEN', sortable: true},
+                        /*{field: 'level', title: __('Level'), operate: 'BETWEEN', sortable: true},*/
                         {field: 'gender', title: __('Gender'), visible: false, searchList: {1: __('Male'), 0: __('Female')}},
                         {field: 'score', title: __('Score'), operate: 'BETWEEN', sortable: true},
                         {field: 'successions', title: __('Successions'), visible: false, operate: 'BETWEEN', sortable: true},
@@ -41,6 +41,34 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'jointime', title: __('Jointime'), formatter: Table.api.formatter.datetime, operate: 'RANGE', addclass: 'datetimerange', sortable: true},
                         {field: 'joinip', title: __('Joinip'), formatter: Table.api.formatter.search},
                         {field: 'status', title: __('Status'), formatter: Table.api.formatter.status, searchList: {normal: __('Normal'), hidden: __('Hidden')}},
+                        {
+                            field: 'buttons',
+                            width: "100px",
+                            title: __('充值积分'),
+                            table: table,
+                            events: Table.api.events.operate,
+                            operate: false,
+                            buttons: [
+                                {
+                                    name: 'detail',
+                                    text: __('充值积分'),
+                                    title: __('充值积分'),
+                                    classname: 'btn btn-xs btn-primary btn-dialog',
+                                    icon: 'fa fa-list',
+                                    url: '/user/user/recharge_score',
+                                    extend:'data-area=["800px","400px"]',
+                                    callback: function (data) {
+                                        //Layer.alert("接收到回传数据：" + JSON.stringify(data), {title: "回传数据"});
+                                        table.bootstrapTable('refresh');
+                                    },
+                                    visible: function (row) {
+                                        //返回true时按钮显示,返回false隐藏
+                                        return true;
+                                    }
+                                },
+                            ],
+                            formatter: Table.api.formatter.buttons
+                        },
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]
@@ -53,6 +81,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             Controller.api.bindevent();
         },
         edit: function () {
+            Controller.api.bindevent();
+        },
+        recharge_score: function () {
             Controller.api.bindevent();
         },
         api: {

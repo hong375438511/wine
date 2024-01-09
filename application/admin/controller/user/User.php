@@ -4,6 +4,10 @@ namespace app\admin\controller\user;
 
 use app\common\controller\Backend;
 use app\common\library\Auth;
+use think\Db;
+use Exception;
+use think\exception\PDOException;
+use think\exception\ValidateException;
 
 /**
  * 会员管理
@@ -100,6 +104,60 @@ class User extends Backend
         }
         Auth::instance()->delete($row['id']);
         $this->success();
+    }
+
+    /**
+     * @desc 充值积分
+     * @param null $ids
+     * @return string
+     */
+    public function recharge_score($ids = null){
+        $row = $this->model->get($ids);
+        if (!$row)
+            $this->error(__('No Results were found'));
+
+        if ($this->request->isPost())
+        {
+            $this->token();
+
+            $params = $this->request->post('row/a');
+            $score = intval($row['score']) + intval($params['score']);
+            $userData = [
+                'id' => $ids,
+                'score' => $score,
+                'updatetime' => time()
+            ];
+
+            $scoreData = [
+                'user_id' => $ids,
+                'score' => intval($params['score']),
+                'before' => intval($row['score']),
+                'after' => $score,
+                'memo' => strval($params['memo'])
+            ];
+
+            //(new \app\common\model\User())::score(intval($params['score']), $row['id'], $params['memo']);
+
+            $result = false;
+            Db::startTrans();
+            try {
+                $result = $this->model->save($userData,[ 'id' => $ids]);
+                //echo $this->model->getLastSql();
+
+                $Score = new \app\common\model\ScoreLog();
+                $Score->save($scoreData);
+                Db::commit();
+            } catch (ValidateException|PDOException|Exception $e) {
+                Db::rollback();
+                $this->error($e->getMessage());
+            }
+            if (false === $result) {
+                $this->error(__('No rows were updated'));
+            }
+            $this->success();
+            $this->error('');
+        }
+        return parent::edit($ids);
     }
 
 }
