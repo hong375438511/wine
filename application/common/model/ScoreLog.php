@@ -20,4 +20,8 @@ class ScoreLog extends Model
     // 追加属性
     protected $append = [
     ];
+
+    public function user(){
+        return $this->belongsTo('User', 'user_id', 'id')->setEagerlyType(0);
+    }
 }
