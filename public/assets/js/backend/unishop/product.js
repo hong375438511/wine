@@ -144,6 +144,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
             '                        <th><i class="fa fa-plus btn-success" data-toggle="modal" data-target="#addMultiValue" v-on:click="addMultiType(\'code\')"></i>' + __('Code') + '</th>\n' +
             '                        <th><i class="fa fa-plus btn-success" data-toggle="modal" data-target="#addMultiValue" v-on:click="addMultiType(\'market_price\')"></i>' + __('Market price') + '</th>\n' +
             '                        <th><i class="fa fa-plus btn-success" data-toggle="modal" data-target="#addMultiValue" v-on:click="addMultiType(\'sales_price\')"></i>' + __('Sales price') + '</th>\n' +
+            '                        <th><i class="fa fa-plus btn-success" data-toggle="modal" data-target="#addMultiValue" v-on:click="addMultiType(\'score\')"></i>' + __('Score') + '</th>\n' +
             '                        <th><i class="fa fa-plus btn-success" data-toggle="modal" data-target="#addMultiValue" v-on:click="addMultiType(\'stock\')"></i>' + __('Stock') + '</th>\n' +
             '                        <th><i class="fa fa-plus btn-success" data-toggle="modal" data-target="#addMultiValue" v-on:click="addMultiType(\'sales\')"></i>' + __('Sales') + '</th>\n' +
             '                    </tr>\n' +
@@ -173,6 +174,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
             '                        <td><input class="form-control" data-rule="required" min="0" type="number" v-model="tItem.code"></td>\n' +
             '                        <td><input class="form-control" data-rule="required" min="0" type="number" v-model="tItem.market_price"></td>\n' +
             '                        <td><input class="form-control" data-rule="required" min="0" type="number" v-model="tItem.sales_price"></td>\n' +
+            '                        <td><input class="form-control" data-rule="required" min="0" type="number" v-model="tItem.score"></td>\n' +
             '                        <td><input class="form-control" data-rule="required" min="0" type="number" v-model="tItem.stock"></td>\n' +
             '                        <td><input class="form-control" data-rule="required" min="0" type="number" v-model="tItem.sales"></td>\n' +
             '                    </tr>\n' +
@@ -193,6 +195,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
             '            <div class="col-xs-12 col-sm-8">\n' +
             '                <input id="c-sales_price" data-rule="required" v-bind:readonly="use_spec == 1" class="form-control"\n' +
             '                       name="row[sales_price]" min="0" type="number" v-model="noSpecValue.sales_price">\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="form-group">\n' +
+            '            <label class="control-label col-xs-12 col-sm-2">' + __('Score') + ':</label>\n' +
+            '            <div class="col-xs-12 col-sm-8">\n' +
+            '                <input id="c-score" data-rule="required" v-bind:readonly="use_spec == 1" class="form-control"\n' +
+            '                       name="row[score]" min="0" type="number" v-model="noSpecValue.score">\n' +
             '            </div>\n' +
             '        </div>\n' +
             '\n' +
@@ -251,6 +261,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
                 specFatherIndex: 0,
                 market_price: _market_price ? _market_price : 0.00,
                 sales_price: _sales_price ? _sales_price : 0.00,
+                score: _score ? _score : 0,
                 stock: _stock ? _stock : 0,
                 sales: _sales ? _sales : 0,
                 multiType:'code', // 当前批量添加的类型
@@ -264,6 +275,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
                 },{
                     'type': 'sales_price',
                     'name': __('Sales price')
+                },{
+                    'type': 'score',
+                    'name': __('Score')
                 },{
                     'type': 'stock',
                     'name': __('Stock')
@@ -299,19 +313,22 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
 
                     let market_price = value.market_price;
                     let sales_price = value.sales_price;
+                    let score = 0;
                     let stock = 0;
                     let sales = 0;
                     for (let item of this.specTableList) {
                         market_price = parseFloat(item.market_price) < parseFloat(market_price) ? parseFloat(item.market_price) : market_price;
                         sales_price = parseFloat(item.sales_price) < parseFloat(sales_price) ? parseFloat(item.sales_price) : sales_price;
+                        score = parseFloat(score) + parseFloat(item.score);
                         stock = parseFloat(stock) + parseFloat(item.stock);
                         sales = parseFloat(sales) + parseFloat(item.sales);
                     }
-                    return {market_price, sales_price, stock, sales};
+                    return {market_price, sales_price, score, stock, sales};
                 } else {
                     return {
                         market_price: this.market_price,
                         sales_price: this.sales_price,
+                        score: this.score,
                         stock: this.stock,
                         sales: this.sales,
                     }
@@ -372,6 +389,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
                                     code: 0,
                                     market_price: 0.00,
                                     sales_price: 0.00,
+                                    score: 0,
                                     stock: 0,
                                     sales: 0,
                                     image: ''
@@ -619,6 +637,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
                             visible: false
                         },
                         {field: 'sales_price', title: __('Lower price')},
+                        {field: 'score', title: __('Score')},
                         {field: 'stock', title: __('Stock')},
                         {field: 'look', title: __('Look')},
                         {field: 'sales', title: __('Sales')},
