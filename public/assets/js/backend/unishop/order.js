@@ -91,6 +91,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'user_id', title: __('User_id')},
                         {field: 'user.username', title: __('User name')},
                         {field: 'out_trade_no', title: __('Out_trade_no')},
+                        {field: 'score', title: __('Score'), operate:'BETWEEN'},
                         {field: 'order_price', title: __('Order_price'), operate:'BETWEEN'},
                         {field: 'discount_price', title: __('Discount_price'), operate:'BETWEEN'},
                         {field: 'delivery_price', title: __('Delivery_price'), operate:'BETWEEN'},

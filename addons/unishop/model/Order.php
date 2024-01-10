@@ -228,7 +228,7 @@ class Order extends Model
         $data['userId'] = $userId;
 
         Hook::listen('create_order_before', $params, $data);
-        list($products, $delivery, $coupon, $baseProductInfos, $address, $orderPrice, $specs, $numbers) = $params;
+        list($products, $delivery, $coupon, $baseProductInfos, $score, $address, $orderPrice, $specs, $numbers) = $params;
 
         // 获取雪花算法分布式id，方便以后扩展
         $snowflake = new Snowflake();
@@ -242,11 +242,16 @@ class Order extends Model
         // 总费用
         $totalPrice = bcadd(bcsub($orderPrice, $discountPrice, 2), $deliveryPrice, 2);
 
+        $productId = array_column($products,'id');
+        $productInfo = (new \addons\unishop\model\Product())->getInfoByPidBatch($productId);
+
+
         $out_trade_no = date('Ymd',time()).uniqid().$userId;
         (new self)->save([
             'id' => $id,
             'user_id' => $userId,
             'out_trade_no' => $out_trade_no,
+            'score' => $score,
             'order_price' => $orderPrice,
             'discount_price' => $discountPrice,
             'delivery_price' => $deliveryPrice,

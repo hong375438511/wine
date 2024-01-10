@@ -113,4 +113,10 @@ class Area extends Model
         return Cache::get('area');
     }
 
+    public function getSelect($pid = 0){
+        $this->where('pid', $pid);
+        $rows = $this->order(['id' => 'asc'])->column('id,name');
+        return $rows;
+    }
+
 }

@@ -158,5 +158,13 @@ class Product extends Model
         return $data;
     }
 
+    public function getInfoByPidBatch($pid = null,$field = null){
+        if(empty($pid) || !$pid) return [];
+        $field = $field ? $field : '*';
+        $data = $this->whereIn('id',$pid)
+            ->field($field)
+            ->select();
+        return $data ? collection($data)->toArray() : [];
+    }
 
 }

@@ -125,4 +125,12 @@ class Order extends Model
     {
         return $this->hasMany('orderRefundProduct', 'order_id', 'id');
     }
+
+    /**
+     * @desc 关联收货地址
+     * @return \think\model\relation\BelongsTo
+     */
+    public function address(){
+        return $this->belongsTo('orderAddress', 'id', 'order_id');
+    }
 }
