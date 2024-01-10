@@ -45,7 +45,7 @@ class Scorelog extends Backend
 
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
             $list = $this->model
-                ->with([ 'user'])
+                ->with(['user'])
                 ->where($where)
                 ->order($sort, $order)
                 ->paginate($limit);
