@@ -51,6 +51,7 @@ class Product
                 $data['stock'] = $product['stock'];
                 $data['sales'] = $product['sales'];
                 $data['image'] = $product['image'];
+                $data['score'] = $product['score'];
             }
         }
         if (is_array($data)){

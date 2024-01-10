@@ -231,6 +231,21 @@ class Auth
     }
 
     /**
+     * @desc 支付
+     * @param $password
+     * @return bool
+     */
+    public function pay($password){
+        $user = User::get(['id' => $this->_user->id]);
+        if ($user->pay_password != $password) {
+        //if ($user->pay_password != $this->getEncryptPassword($password, $user->salt)) {
+            $this->setError('Password is incorrect');
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 退出
      *
      * @return boolean

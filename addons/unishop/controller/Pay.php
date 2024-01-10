@@ -275,11 +275,56 @@ class Pay extends Base
         if (!$order) {
             $this->error(__('Order does not exist'));
         }
+
         try {
             Db::startTrans();
 
             Hook::add('paid_success', 'addons\\unishop\\behavior\\Order');
             Hook::listen('paid_success', $order, ['pay_type' => \addons\unishop\model\Order::PAY_OFFLINE]);
+
+            Db::commit();
+        } catch (Exception $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+
+        $this->success('', true);
+    }
+
+    public function scorePay()
+    {
+        $orderId = $this->request->post('order_id', 0);
+        $orderId = Hashids::decodeHex($orderId);
+
+        $orderModel = new \addons\unishop\model\Order();
+        $order = $orderModel->where(['id' => $orderId])->find();
+
+        if (!$order) {
+            $this->error(__('Order does not exist'));
+        }
+
+        $password = $this->request->post('pay_password');
+        $ret = $this->auth->pay($password);
+        if(!$ret){
+            $this->error('密码错误！', true);
+        }
+
+        $UserMD = new \app\common\model\User();
+
+        $userInfo = $UserMD->getRowById($order['user_id']);
+        if($userInfo['score'] - $order['score'] < 0){
+            $this->error('积分不购！', true);
+        }
+
+        try {
+            Db::startTrans();
+
+            $UserMD::score(-$order['score'],$order['user_id'],'');
+
+            Hook::add('paid_success', 'addons\\unishop\\behavior\\Order');
+            Hook::listen('paid_success', $order, ['pay_type' => \addons\unishop\model\Order::PAY_SCORE]);
+
+            $this->
 
             Db::commit();
         } catch (Exception $e) {

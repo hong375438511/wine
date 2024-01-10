@@ -147,6 +147,7 @@ class Order
 
         // 订单价格
         $orderPrice = 0;
+        $score = 0;
 
         // 条件一
         $products = [];
@@ -183,6 +184,7 @@ class Order
                 throw new Exception(__('Insufficient inventory，%s pieces left', $productInfo['stock']));
             }
             $orderPrice = bcadd($orderPrice, bcmul($productInfo['sales_price'], $numbers[$key], 2), 2);
+            $score = bcadd($score, bcmul($productInfo['score'], $numbers[$key], 0), 0);
             $baseProductInfo[] = $productInfo;
         }
 
@@ -195,10 +197,18 @@ class Order
                 throw new Exception(__('You must purchase at least %s item to use this shipping method', $delivery['min']));
             }
         }
-        $address = (new Address)->where(['id' => $extra['address_id'], 'user_id' => $extra['userId']])->find();
-        if (!$address) {
-            throw new Exception(__('Address not exist'));
+
+        //自提不需要验证地址
+        if($extra['s_self_pickup']){
+            $address = [];
         }
+        else{
+            $address = (new Address)->where(['id' => $extra['address_id'], 'user_id' => $extra['userId']])->find();
+            if (!$address) {
+                throw new Exception(__('Address not exist'));
+            }
+        }
+
 
         // 条件四
         if ($extra['coupon_id']) {
@@ -214,7 +224,7 @@ class Order
             $coupon = [];
         }
 
-        $params = [$products, $delivery, $coupon, $baseProductInfo, $address, $orderPrice, $specs, $numbers];
+        $params = [$products, $delivery, $coupon, $baseProductInfo, $address, $score, $orderPrice, $specs, $numbers];
     }
 
     /**

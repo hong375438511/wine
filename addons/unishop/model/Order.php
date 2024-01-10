@@ -40,6 +40,7 @@ class Order extends Model
     const PAY_OFFLINE = 2; // 线下支付 或 货到付款
     const PAY_WXPAY = 3; // 微信支付
     const PAY_ALIPAY = 4; // 支付宝支付
+    const PAY_SCORE = 5; // 积分支付
 
     // 订单状态
     const STATUS_NORMAL = 1; // 正常
@@ -228,7 +229,7 @@ class Order extends Model
         $data['userId'] = $userId;
 
         Hook::listen('create_order_before', $params, $data);
-        list($products, $delivery, $coupon, $baseProductInfos, $score, $address, $orderPrice, $specs, $numbers) = $params;
+        list($products, $delivery, $coupon, $baseProductInfos, $address, $score, $orderPrice, $specs, $numbers) = $params;
 
         // 获取雪花算法分布式id，方便以后扩展
         $snowflake = new Snowflake();
@@ -241,10 +242,6 @@ class Order extends Model
         $deliveryPrice = Delivery::algorithm($delivery, array_sum($numbers));
         // 总费用
         $totalPrice = bcadd(bcsub($orderPrice, $discountPrice, 2), $deliveryPrice, 2);
-
-        $productId = array_column($products,'id');
-        $productInfo = (new \addons\unishop\model\Product())->getInfoByPidBatch($productId);
-
 
         $out_trade_no = date('Ymd',time()).uniqid().$userId;
         (new self)->save([
@@ -259,6 +256,8 @@ class Order extends Model
             'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
             'remark' => $data['remark'] ?? '',
             'status' => self::STATUS_NORMAL,
+            's_self_pickup' => $data['s_self_pickup']  //是否自提
+
         ]);
 
         (new OrderExtend)->save([

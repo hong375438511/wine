@@ -132,6 +132,12 @@ class User extends Model
         }
     }
 
+    public function getRowById($id = null,$field = null){
+        if(!$id) return [];
+        $field = $field ? $field : '*';
+        return $this->where(['id' => $id])->field($field)->find();
+    }
+
     /**
      * 根据积分获取等级
      * @param int $score 积分
