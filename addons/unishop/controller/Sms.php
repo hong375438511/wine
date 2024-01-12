@@ -47,7 +47,8 @@ class Sms extends Base
             $this->error(__('发送频繁'));
         }
         if ($event) {
-            $userinfo = User::getByMobile($mobile);
+            //$userinfo = User::getByMobile($mobile);
+            $userinfo = \app\common\model\User::getByMobile($mobile);
             if ($event == 'register' && $userinfo) {
                 //已被注册
                 $this->error(__('手机号已被注册'));

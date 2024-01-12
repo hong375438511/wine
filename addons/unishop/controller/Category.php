@@ -96,7 +96,7 @@ class Category extends Api
     public function tabs()
     {
         $list = $this->model
-            ->with('children')
+//            ->with('children')
             ->where('pid', 0)
             ->where('status', 'normal')
             ->cache(20)
@@ -106,12 +106,16 @@ class Category extends Api
         }
         $tabs = [];
         foreach ($list as $item) {
-            foreach ($item['children'] as $child) {
+            $tabs[] = [
+                'id' => $item['id'],
+                'name' => $item['name'],
+            ];
+           /* foreach ($item['children'] as $child) {
                 $tabs[] = [
                     'id' => $child['id'],
                     'name' => $item['name'] . '-' . $child['name'],
                 ];
-            }
+            }*/
         }
         $this->success('菜单', $tabs);
     }

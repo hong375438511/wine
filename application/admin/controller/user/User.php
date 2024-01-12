@@ -136,9 +136,9 @@ class User extends Backend
                 'memo' => strval($params['memo'])
             ];
 
-            //(new \app\common\model\User())::score(intval($params['score']), $row['id'], $params['memo']);
+            $result = (new \app\common\model\User())::score(intval($params['score']), $row['id'], $params['memo']);
 
-            $result = false;
+            /*$result = false;
             Db::startTrans();
             try {
                 $result = $this->model->save($userData,[ 'id' => $ids]);
@@ -150,7 +150,7 @@ class User extends Backend
             } catch (ValidateException|PDOException|Exception $e) {
                 Db::rollback();
                 $this->error($e->getMessage());
-            }
+            }*/
             if (false === $result) {
                 $this->error(__('No rows were updated'));
             }

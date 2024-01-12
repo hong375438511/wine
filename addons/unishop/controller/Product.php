@@ -31,6 +31,7 @@ class Product extends Base
      * @ApiReturnParams  (name="images_text", type="array", description="商品图片组")
      * @ApiReturnParams  (name="desc", type="string", description="商品详情")
      * @ApiReturnParams  (name="sales", type="integer", description="销量")
+     * @ApiReturnParams  (name="score", type="integer", description="积分")
      * @ApiReturnParams  (name="sales_price", type="string", description="销售价钱")
      * @ApiReturnParams  (name="market_price", type="string", description="市场价钱")
      * @ApiReturnParams  (name="product_id", type="string", description="商品id")
@@ -129,6 +130,7 @@ class Product extends Base
      * @ApiReturnParams  (name="title", type="string", description="商品名称")
      * @ApiReturnParams  (name="image", type="string", description="商品图片")
      * @ApiReturnParams  (name="sales", type="integer", description="销量")
+     * @ApiReturnParams  (name="score", type="integer", description="积分")
      * @ApiReturnParams  (name="sales_price", type="string", description="销售价钱")
      * @ApiReturnParams  (name="product_id", type="string", description="商品id")
      */
@@ -158,7 +160,7 @@ class Product extends Base
             ->where(['switch' => productModel::SWITCH_ON])
             ->page($page, $pagesize)
             ->order($by, $desc)
-            ->field('id,title,image,sales_price,sales,real_sales')
+            ->field('id,title,image,score,sales_price,sales,real_sales')
             ->select();
 
         if ($result) {

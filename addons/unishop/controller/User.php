@@ -285,7 +285,8 @@ class User extends Base
 
         if (isset($decryptedData['phoneNumber'])) {
             // 看看有没有这个mobile的用户
-            $user = \addons\unishop\model\User::getByMobile($decryptedData['phoneNumber']);
+            //$user = \addons\unishop\model\User::getByMobile($decryptedData['phoneNumber']);
+            $user = \app\common\model\User::getByMobile($decryptedData['phoneNumber']);
             if ($user) {
                 // 把user_extend表的user_id字段换成已存在的用户id
                 if ($userExtend['user_id'] != $user->id) {

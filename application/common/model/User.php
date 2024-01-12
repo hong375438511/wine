@@ -111,6 +111,7 @@ class User extends Model
      * @param int    $score   积分
      * @param int    $user_id 会员ID
      * @param string $memo    备注
+     * @return bool
      */
     public static function score($score, $user_id, $memo)
     {
@@ -123,15 +124,24 @@ class User extends Model
                 $level = self::nextlevel($after);
                 //更新会员信息
                 $user->save(['score' => $after, 'level' => $level]);
+
                 //写入日志
                 ScoreLog::create(['user_id' => $user_id, 'score' => $score, 'before' => $before, 'after' => $after, 'memo' => $memo]);
             }
             Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
+            return false;
         }
+        return true;
     }
 
+    /**
+     * @desc 通过ID获取用户信息
+     * @param null $id
+     * @param null $field
+     * @return array|false|\PDOStatement|string|Model
+     */
     public function getRowById($id = null,$field = null){
         if(!$id) return [];
         $field = $field ? $field : '*';
@@ -153,5 +163,15 @@ class User extends Model
             }
         }
         return $level;
+    }
+
+    /**
+     * @desc 通过手机号码获取用户信息
+     * @param $mobile
+     * @return array|false|\PDOStatement|string|Model
+     */
+    public static function getByMobile($mobile){
+        $data = self::where(['mobile' => $mobile])->find();
+        return $data;
     }
 }

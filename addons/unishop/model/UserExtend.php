@@ -87,5 +87,10 @@ class UserExtend extends Model
         return $user;
     }
 
+    public static function getByOpenid($openid){
+        $data = self::where(['openid' => $openid])->find();
+        return $data;
+    }
+
 
 }
