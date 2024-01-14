@@ -160,7 +160,8 @@ class Product extends Base
             ->where(['switch' => productModel::SWITCH_ON])
             ->page($page, $pagesize)
             ->order($by, $desc)
-            ->field('id,title,image,score,sales_price,sales,real_sales')
+            //->field('id,title,image,score,sales_price,sales,real_sales')
+            ->field('id,title,image,score')
             ->select();
 
         if ($result) {

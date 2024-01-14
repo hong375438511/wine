@@ -12,7 +12,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
     //使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象
     var specComponent = Vue.extend({
         template: '<div>' +
-            '        <div class="form-group">\n' +
+            '        <div class="form-group" style="display: none">\n' +
             '            <label class="control-label col-xs-12 col-sm-2">' + __('use_spec') + '</label>\n' +
             '            <div class="col-xs-12 col-sm-8">\n' +
             '                <input type="radio" name="row[use_spec]" value="0" v-model="use_spec"/>否\n' +
@@ -183,14 +183,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
             '            </div>\n' +
             '        </div>\n' +
             '\n' +
-            '        <div class="form-group">\n' +
+            '        <div class="form-group" style="display: none">\n' +
             '            <label class="control-label col-xs-12 col-sm-2">' + __('Lower market price') + ':</label>\n' +
             '            <div class="col-xs-12 col-sm-8">\n' +
             '                <input id="c-market_price" data-rule="required" v-bind:readonly="use_spec == 1" class="form-control"\n' +
             '                       name="row[market_price]" min="0" type="number" v-model="noSpecValue.market_price">\n' +
             '            </div>\n' +
             '        </div>\n' +
-            '        <div class="form-group">\n' +
+            '        <div class="form-group" style="display: none">\n' +
             '            <label class="control-label col-xs-12 col-sm-2">' + __('Lower sales price') + ':</label>\n' +
             '            <div class="col-xs-12 col-sm-8">\n' +
             '                <input id="c-sales_price" data-rule="required" v-bind:readonly="use_spec == 1" class="form-control"\n' +
@@ -213,7 +213,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
             '                       name="row[stock]" min="0" type="number" v-model="noSpecValue.stock">\n' +
             '            </div>\n' +
             '        </div>\n' +
-            '        <div class="form-group">\n' +
+            '        <div class="form-group" style="display: none">\n' +
             '            <label class="control-label col-xs-12 col-sm-2">' + __('Total sales') + ':</label>\n' +
             '            <div class="col-xs-12 col-sm-8">\n' +
             '                <input id="c-sales" data-rule="required" v-bind:readonly="use_spec == 1" class="form-control"\n' +
@@ -636,14 +636,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
                             formatter: Table.api.formatter.images,
                             visible: false
                         },
-                        {field: 'sales_price', title: __('Lower price')},
                         {field: 'score', title: __('Score')},
                         {field: 'stock', title: __('Stock')},
+                        /*{field: 'sales_price', title: __('Lower price')},
                         {field: 'look', title: __('Look')},
                         {field: 'sales', title: __('Sales')},
                         {field: 'real_sales', title: __('Real sales')},
                         {field: 'no_buy_yet', title: __('No buy yet')},
-                        {field: 'real_look', title: __('Real look')},
+                        {field: 'real_look', title: __('Real look')},*/
                         {field: 'delivery_id', title: __('Delivery_id'), visible: false},
                         {field: 'delivery.name', title: __('Delivery_id'), visible: false},
                         {
@@ -670,13 +670,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload', 'vue'], fun
                             events: Table.api.events.operate,
                             formatter: Table.api.formatter.operate,
                             buttons:[
-                                {
+                               /* //评价
+                               {
                                     name: 'evaluate',
                                     text: __('Evaluate'),
                                     classname: 'btn btn-xs btn-info btn-evaluate',
                                     extend: 'data-toggle="tooltip"',
                                     icon: 'fa fa-commenting'
-                                },
+                                },*/
+                                //复制
                                 {
                                     name: 'copy',
                                     text: __('Copy'),
