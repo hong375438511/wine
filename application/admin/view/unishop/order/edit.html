@@ -15,24 +15,30 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Score')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-score" class="form-control" step="0.01" name="row[score]" type="number" value="{$row.score}">
+        </div>
+    </div>
+    <div class="form-group" style="display: none">
         <label class="control-label col-xs-12 col-sm-2">{:__('Order_price')}:</label>
         <div class="col-xs-12 col-sm-8">
             <input id="c-order_price" class="form-control" step="0.01" name="row[order_price]" type="number" value="{$row.order_price}">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="display: none">
         <label class="control-label col-xs-12 col-sm-2">{:__('Discount_price')}:</label>
         <div class="col-xs-12 col-sm-8">
             <input id="c-discount_price" class="form-control" step="0.01" name="row[discount_price]" type="number" value="{$row.discount_price}">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="display: none">
         <label class="control-label col-xs-12 col-sm-2">{:__('Delivery_price')}:</label>
         <div class="col-xs-12 col-sm-8">
             <input id="c-delivery_price" class="form-control" step="0.01" name="row[delivery_price]" type="number" value="{$row.delivery_price}">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="display: none">
         <label class="control-label col-xs-12 col-sm-2">{:__('Total_price')}:</label>
         <div class="col-xs-12 col-sm-8">
             <input id="c-total_price" class="form-control" step="0.01" name="row[total_price]" type="number" value="{$row.total_price}">
@@ -100,7 +106,7 @@
             <input id="c-have_delivered" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[have_delivered]" type="text" value="{:$row.have_delivered?datetime($row.have_delivered):''}">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="display: none">
         <label class="control-label col-xs-12 col-sm-2">{:__('Commented time')}:</label>
         <div class="col-xs-12 col-sm-8">
             <input id="c-have_commented" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[have_commented]" type="text" value="{:$row.have_commented?datetime($row.have_commented):''}">

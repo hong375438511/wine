@@ -284,7 +284,7 @@ class Order extends Model
                 'number' => $numbers[$key],
                 'spec' => $specs[$key] ?? '',
                 'price' => $baseProductInfos[$key]['sales_price'],
-                'score' => $baseProductInfos[$key]['sales_price'],
+                'score' => $baseProductInfos[$key]['score'],
                 //'product_json' => json_encode($product), // Todo 耗内存，损速度 (考虑去掉)
                 'createtime' => time(),
                 'updatetime' => time(),

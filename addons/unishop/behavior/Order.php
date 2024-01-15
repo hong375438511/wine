@@ -148,14 +148,18 @@ class Order
     public function createOrderBefore(&$params, $extra)
     {
 
-        $specs = explode(',', $extra['spec']);
+        $specs = isset($extra['spec']) ? explode(',', $extra['spec']) : [];
         foreach ($specs as &$spec) {
             $spec = str_replace('|', ',', $spec);
         }
         $numbers = explode(',', $extra['number']);
         $productIds = explode(',', $extra['product_id']);
 
-        if (count($specs) !== count($numbers) || count($specs) !== count($productIds)) {
+        /*if (count($specs) !== count($numbers) || count($specs) !== count($productIds)) {
+            throw new Exception(__('Parameter error'));
+        }*/
+
+        if (count($productIds) !== count($numbers)) {
             throw new Exception(__('Parameter error'));
         }
 
@@ -193,7 +197,7 @@ class Order
 
         // 条件二
         foreach ($products as $key => $product) {
-            $productInfo = (new \addons\unishop\extend\Product())->getBaseData($product, $specs[$key] ? $specs[$key] : '');
+            $productInfo = (new \addons\unishop\extend\Product())->getBaseData($product, isset($specs[$key]) && $specs[$key] ? $specs[$key] : '');
             if ($productInfo['stock'] < $numbers[$key]) {
                 throw new Exception(__('Insufficient inventory，%s pieces left', $productInfo['stock']));
             }

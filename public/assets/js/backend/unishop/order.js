@@ -92,22 +92,23 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'user.username', title: __('User name')},
                         {field: 'out_trade_no', title: __('Out_trade_no')},
                         {field: 'score', title: __('Score'), operate:'BETWEEN'},
-                        {field: 'order_price', title: __('Order_price'), operate:'BETWEEN'},
+                        /*{field: 'order_price', title: __('Order_price'), operate:'BETWEEN'},
                         {field: 'discount_price', title: __('Discount_price'), operate:'BETWEEN'},
                         {field: 'delivery_price', title: __('Delivery_price'), operate:'BETWEEN'},
                         {field: 'total_price', title: __('Total_price'), operate:'BETWEEN'},
+                        {field: 'pay_type', title: __('Pay_type'), searchList: {"1":__('Online'),"2":__('Offline'),"3":__('wxPay'),"4":__('aliPay'),"5":__('scorePay')}, formatter: Table.api.formatter.normal},*/
                         {field: 'status', title: __('Status'), searchList: {"-1":__('Refund'),"0":__('Cancel'),"1":__('Normal')}, formatter: Table.api.formatter.status},
-                        {field: 'pay_type', title: __('Pay_type'), searchList: {"1":__('Online'),"2":__('Offline'),"3":__('wxPay'),"4":__('aliPay')}, formatter: Table.api.formatter.normal},
                         {field: 'ip', title: __('Ip'), visible:false},
                         {field: 'have_paid_status', title: __('Have_paid'), searchList: {"0":__('No'),"1":__('Yes')}, formatter: Table.api.formatter.statusCustom},
                         {field: 'have_delivered_status', title: __('Have_delivered'),searchList: {"0":__('No'),"1":__('Yes')}, formatter: Table.api.formatter.statusCustom},
                         {field: 'have_received_status', title: __('Have_received'),searchList: {"0":__('No'),"1":__('Yes')}, formatter: Table.api.formatter.statusCustom},
-                        {field: 'have_commented_status', title: __('Have_commented'),searchList: {"0":__('No'),"1":__('Yes')}, formatter: Table.api.formatter.statusCustom},
+                        {field: 'is_self_pickup', title: __('Is Self Pickup'), searchList: {"0":__('No'),"1":__('Yes')}, formatter: Table.api.formatter.statusCustom},
+                        /*{field: 'have_commented_status', title: __('Have_commented'),searchList: {"0":__('No'),"1":__('Yes')}, formatter: Table.api.formatter.statusCustom},*/
                         {field: 'refund_status', title: __('Refund status'),searchList: {"0":__('None'),"1":__('Apply'),"2":__('Waiting for shipment'),"3":__('Pass'),"4":__('Refuse')},  formatter: Table.api.formatter.status},
                         {field: 'have_paid', title: __('Pay time'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime,visible:false},
                         {field: 'have_delivered', title: __('Delivered time'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime,visible:false},
                         {field: 'have_received', title: __('Received time'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime,visible:false},
-                        {field: 'have_commented', title: __('Commented time'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime,visible:false},
+                        /*{field: 'have_commented', title: __('Commented time'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime,visible:false},*/
                         {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime},
                         {field: 'remark', title: __('Remark'), operate: 'LIKE %...%', placeholder: '模糊搜索，*表示任意字符'},
                         {field: 'updatetime', title: __('Updatetime'), operate:'RANGE', addclass:'datetimerange', formatter: Table.api.formatter.datetime,visible:false},
@@ -123,14 +124,24 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     text: __('Refund'),
                                     classname: 'btn btn-xs btn-info btn-refund',
                                     extend: 'data-toggle="tooltip"',
-                                    icon: 'fa fa-handshake-o'
+                                    icon: 'fa fa-handshake-o',
+                                    hidden:function(row){
+                                        if(row.refund_status == 0){
+                                            return true;
+                                        }
+                                    }
                                 },
                                 {
                                     name: 'delivere',
                                     text: __('Delivere'),
                                     classname: 'btn btn-xs btn-info btn-delivere',
                                     extend: 'data-toggle="tooltip"',
-                                    icon: 'fa fa-plane'
+                                    icon: 'fa fa-plane',
+                                    hidden:function(row){
+                                        if(row.is_self_pickup == 1){
+                                            return true;
+                                        }
+                                    }
                                 },
                                 {
                                     name: 'product',

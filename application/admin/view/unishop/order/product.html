@@ -2,11 +2,11 @@
 
     <ul class="list-group">
         <li class="list-group-item">
-            订单金额：￥{$order.order_price}
+            订单积分：￥{$order.score}
         </li>
-        <li class="list-group-item">
+        <!--<li class="list-group-item">
             实付金额：￥{$order.total_price}元 (包含优惠￥{$order.discount_price}，物流费用￥{$order.delivery_price})
-        </li>
+        </li>-->
     </ul>
 
     <style>
@@ -33,11 +33,11 @@
         <div class="media-body">
             <div>商品ID:{$item.product_id}</div>
             <h4 class="media-heading">{$item.title}</h4>
-            <div>规格：{$item.spec}</div>
-            <div>{$item.number} ✖ {$item.price}</div>
-            <div class="total-price">总共：{$item.price * $item.number} 元</div>
+            <!--<div>规格：{$item.spec}</div>-->
+            <div>{$item.number} ✖ {$item.score}(积分)</div>
+            <div class="total-price">总共：{$item.number * $item.score}(积分)</div>
         </div>
-        {if empty($evaluate[$item.product_id])}
+       <!-- {if empty($evaluate[$item.product_id])}
         <div class="media-body">
             <h4 class="media-heading">未评价</h4>
         </div>
@@ -49,7 +49,7 @@
             <div>匿名: {$evaluate[$item.product_id]['anonymous'] ? '是' : '否'}</div>
             <div>置顶: {$evaluate[$item.product_id]['toptime'] ? '是' : '否'}</div>
         </div>
-        {/if}
+        {/if}-->
     </div>
     {/foreach}
 

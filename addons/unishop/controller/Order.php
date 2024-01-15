@@ -148,7 +148,8 @@ class Order extends Base
 
             /** 运费数据 **/
             $cityId = $address && isset($address['city_id']) ? $address['city_id'] : 0;
-            $delivery = (new DeliveryRuleModel())->getDelivetyByArea($cityId);
+            //$delivery = (new DeliveryRuleModel())->getDelivetyByArea($cityId);
+            $delivery = [];
 
             foreach ($productData as &$product) {
                 $product['image'] = Config::getImagesFullUrl($product['image']);
@@ -160,7 +161,7 @@ class Order extends Base
                 'product' => $productData,
                 'address' => $address,
                 'coupon' => $coupon,
-                'delivery' => $delivery['list']
+                'delivery' => isset($delivery['list']) ? $delivery['list'] : []
             ]);
 
         } catch (Exception $e) {

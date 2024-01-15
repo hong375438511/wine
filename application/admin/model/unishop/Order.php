@@ -36,7 +36,8 @@ class Order extends Model
 
     public function getPayTypeList()
     {
-        return ['1' => __('Online'), '2' => __('Offline'), '3' => __('wxPay'), '4' => __('aliPay')];
+        return ['5' => __('scorePay')];
+        //return ['1' => __('Online'), '2' => __('Offline'), '3' => __('wxPay'), '4' => __('aliPay'), '5' => __('scorePay')];
     }
 
     public function getStatusList()

@@ -12,6 +12,7 @@ return [
     'Offline'          => '到货付款',
     'wxPay'            => '微信付款',
     'aliPay'           => '支付宝付',
+    'scorePay'           => '积分支付',
     'Ip'               => '下单ip',
     'Remark'           => '订单备注',
     'Status'           => '订单状态',
@@ -54,4 +55,5 @@ return [
     'Withdraw money'           => '退款',
     'Not withdraw money'           => '不退款',
     'Tourist'           => '游客',
+    'Is Self Pickup'           => '自提',
 ];
