@@ -208,21 +208,23 @@ class Order
             throw new Exception('积分不购');
         }
 
-        // 条件三
-        $delivery = (new DeliveryRuleModel())->cityInScopeOfDelivery($extra['city_id'], $extra['delivery_id']);
-        if (!$delivery) {
-            throw new Exception(__('Your receiving address is not within the scope of delivery'));
-        } else {
-            if ($delivery['min'] > array_sum($numbers)) {
-                throw new Exception(__('You must purchase at least %s item to use this shipping method', $delivery['min']));
-            }
-        }
-
+        //默认都支持配送
+        $delivery = [];
         //自提不需要验证地址
-        if($extra['s_self_pickup']){
+        if($extra['is_self_pickup']){
             $address = [];
         }
         else{
+            // 条件三
+            /*$delivery = (new DeliveryRuleModel())->cityInScopeOfDelivery($extra['city_id'], $extra['delivery_id']);
+            if (!$delivery) {
+                throw new Exception(__('Your receiving address is not within the scope of delivery'));
+            } else {
+                if ($delivery['min'] > array_sum($numbers)) {
+                    throw new Exception(__('You must purchase at least %s item to use this shipping method', $delivery['min']));
+                }
+            }*/
+
             $address = (new Address)->where(['id' => $extra['address_id'], 'user_id' => $extra['userId']])->find();
             if (!$address) {
                 throw new Exception(__('Address not exist'));
@@ -231,7 +233,7 @@ class Order
 
 
         // 条件四
-        if ($extra['coupon_id']) {
+        if (isset($extra['coupon_id']) && $extra['coupon_id']) {
             $coupon = Coupon::get($extra['coupon_id']);
             if ($coupon['switch'] == Coupon::SWITCH_OFF || $coupon['deletetime'] || $coupon['starttime'] > time() || $coupon['endtime'] < time()) {
                 throw new Exception('此优惠券不可用');

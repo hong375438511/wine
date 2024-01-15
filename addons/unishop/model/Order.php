@@ -234,12 +234,14 @@ class Order extends Model
         // 获取雪花算法分布式id，方便以后扩展
         $snowflake = new Snowflake();
         $id = $snowflake->id();
+
         // 优惠费用
         $discountPrice = $coupon['value'] ?? 0;
         // 订单费用
         //$orderPrice;
         // 运费
-        $deliveryPrice = Delivery::algorithm($delivery, array_sum($numbers));
+        //$deliveryPrice = Delivery::algorithm($delivery, array_sum($numbers));
+        $deliveryPrice = 0;
         // 总费用
         $totalPrice = bcadd(bcsub($orderPrice, $discountPrice, 2), $deliveryPrice, 2);
 
@@ -256,19 +258,18 @@ class Order extends Model
             'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
             'remark' => $data['remark'] ?? '',
             'status' => self::STATUS_NORMAL,
-            's_self_pickup' => $data['s_self_pickup'],  //是否自提
+            'is_self_pickup' => $data['is_self_pickup'],  //是否自提
             'have_paid' => time(),
             'pay_type' => \addons\unishop\model\Order::PAY_SCORE,
         ]);
-
         (new OrderExtend)->save([
             'user_id' => $userId,
             'order_id' => $id,
-            'coupon_id' => $coupon ? $coupon['id'] : 0,
+            'coupon_id' => isset($coupon['id']) ? $coupon['id'] : 0,
             'coupon_json' => json_encode($coupon),
-            'delivery_id' => $delivery['id'],
+            'delivery_id' => isset($delivery['id']) ? $delivery['id'] : 0,
             'delivery_json' => json_encode($delivery),
-            'address_id' => $address['id'],
+            'address_id' => isset($address['id']) ? $address['id'] : 0,
             'address_json' => json_encode($address),
         ]);
 
@@ -283,6 +284,7 @@ class Order extends Model
                 'number' => $numbers[$key],
                 'spec' => $specs[$key] ?? '',
                 'price' => $baseProductInfos[$key]['sales_price'],
+                'score' => $baseProductInfos[$key]['sales_price'],
                 //'product_json' => json_encode($product), // Todo 耗内存，损速度 (考虑去掉)
                 'createtime' => time(),
                 'updatetime' => time(),

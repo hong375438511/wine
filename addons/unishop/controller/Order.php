@@ -178,6 +178,7 @@ class Order extends Base
      * @ApiParams   (name="product_id", type=string, required=true, description="商品id，多个用法(product_id,product_id,product_id)")
      * @ApiParams   (name="number", type=string, required=true, description="商品数量，多个用法(number,number,number)")
      * @ApiParams   (name="spec", type=string, required=true, description="规格，多个用法(spec|spec2,spec|spec2,spec|spec2)")
+     * @ApiParams   (name="is_self_pickup", type=integer, required=true, description="是否自提")
      * @ApiParams   (name="city_id", type=integer, required=true, description="城市id")
      * @ApiParams   (name="address_id", type=string, required=true, description="收货地址id")
      * @ApiParams   (name="delivery_id", type=integer, required=true, description="运费模板id")
@@ -589,15 +590,15 @@ class Order extends Base
      */
     public function detail()
     {
-        $order_id = $this->request->post('order_id', 0);
-        $order_id = \addons\unishop\extend\Hashids::decodeHex($order_id);
+        echo $order_id = $this->request->post('order_id', 0);
+        echo $order_id = \addons\unishop\extend\Hashids::decodeHex($order_id);
 
         try {
             $orderModel = new \addons\unishop\model\Order();
             $order = $orderModel
                 ->with([
                     'products' => function ($query) {
-                        $query->field('id,order_id,image,number,price,spec,title,product_id');
+                        $query->field('id,order_id,image,number,score,spec,title,product_id');
                     },
                     'extend' => function ($query) {
                         $query->field('id,order_id,address_id,address_json,express_number,express_company');
@@ -615,15 +616,21 @@ class Order extends Base
                 $order['express_number'] = $order['extend']['express_number'];
                 $order['express_company'] = !empty($order['extend']['express_company']) ? $order['extend']['express_company'] : '快递单号';
 
-                // 送货地址
-                $address = json_decode($order['extend']['address_json'], true);
-                $area = (new \addons\unishop\model\Area())
-                    ->whereIn('id', [$address['province_id'], $address['city_id'], $address['area_id']])
-                    ->column('name', 'id');
-                $delivery['username'] = $address['name'];
-                $delivery['mobile'] = $address['mobile'];
-                $delivery['address'] = $area[$address['province_id']] . ' ' . $area[$address['city_id']] . ' ' . $area[$address['area_id']] . ' ' . $address['address'];
-                $order['delivery'] = $delivery;
+                if($order['is_self_pickup']){
+                    $order['delivery']  = [];
+                }
+                else{
+                    // 送货地址
+                    $address = json_decode($order['extend']['address_json'], true);
+                    $area = (new \addons\unishop\model\Area())
+                        ->whereIn('id', [$address['province_id'], $address['city_id'], $address['area_id']])
+                        ->column('name', 'id');
+                    $delivery['username'] = $address['name'];
+                    $delivery['mobile'] = $address['mobile'];
+                    $delivery['address'] = $area[$address['province_id']] . ' ' . $area[$address['city_id']] . ' ' . $area[$address['area_id']] . ' ' . $address['address'];
+                    $order['delivery'] = $delivery;
+                }
+
 
                 // 是否已评论
                 $evaluate = array_column($order['evaluate'], 'product_id');

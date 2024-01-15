@@ -44,7 +44,8 @@ class Order extends Validate
      * 验证场景
      */
     protected $scene = [
-        'submit'  => ['product_id', 'number', 'city_id', 'address_id', 'delivery_id', 'remark'], // 创建订单
+        //'submit'  => ['product_id', 'number', 'city_id', 'address_id', 'delivery_id', 'remark'], // 创建订单
+        'submit'  => ['product_id', 'number', 'remark'], // 创建订单
         'submitFlash'  => ['product_id', 'number', 'city_id', 'address_id', 'delivery_id', 'remark', 'flash_id'], // 秒杀创建订单
     ];
 

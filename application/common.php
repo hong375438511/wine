@@ -432,7 +432,7 @@ if (!function_exists('check_cors_request')) {
             $info = parse_url($_SERVER['HTTP_ORIGIN']);
             $domainArr = explode(',', config('fastadmin.cors_request_domain'));
             $domainArr[] = request()->host(true);
-            if (in_array("*", $domainArr) || in_array($_SERVER['HTTP_ORIGIN'], $domainArr) || (isset($info['host']) && in_array($info['host'], $domainArr))) {
+            if (in_array("*", $domainArr) || in_array($_SERVER['HTTP_ORIGIN'], $domainArr) || (isset($info['host']) && in_array($info['host'], $domainArr)) || in_array($_SERVER['HTTP_HOST'], $domainArr)) {
                 header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
             } else {
                 $response = Response::create('跨域检测无效', 'html', 403);
