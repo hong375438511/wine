@@ -256,8 +256,9 @@ class Order extends Model
             'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
             'remark' => $data['remark'] ?? '',
             'status' => self::STATUS_NORMAL,
-            's_self_pickup' => $data['s_self_pickup']  //是否自提
-
+            's_self_pickup' => $data['s_self_pickup'],  //是否自提
+            'have_paid' => time(),
+            'pay_type' => \addons\unishop\model\Order::PAY_SCORE,
         ]);
 
         (new OrderExtend)->save([
@@ -270,7 +271,6 @@ class Order extends Model
             'address_id' => $address['id'],
             'address_json' => json_encode($address),
         ]);
-
 
         $orderProduct = $specNumber = [];
         foreach($products as $key => $product) {
@@ -298,6 +298,8 @@ class Order extends Model
         (new OrderProduct)->insertAll($orderProduct);
 
         $data['specNumber'] = $specNumber;
+        $UserMD = new \app\common\model\User();
+        $UserMD::score(-$score,$data['userId'],'兑换商品，订单号为'.$out_trade_no);
 
         Hook::listen('create_order_after', $products, $data);
 
@@ -381,6 +383,8 @@ class Order extends Model
             $refundProducts = array_column($item['refund_products'], 'order_product_id');
             unset($item['evaluate']);
             unset($item['refund_products']);
+
+            //$item['s_self_pickup'] = $item['s_self_pickup'] ? '是' : '否';
 
             foreach ($item['products'] as &$product) {
                 $product['image'] = Config::getImagesFullUrl($product['image']);

@@ -40,8 +40,11 @@ class Order
             foreach ($extra['specNumber'] as $spec => $number) {
                 $result = 0;
                 if (is_numeric($spec) && $params[$key]['use_spec'] == Product::SPEC_OFF) {
-                    $result = Db::execute('UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, real_sales = real_sales+?, stock = stock-? WHERE id = ?", [
+                    /*$result = Db::execute('UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, real_sales = real_sales+?, stock = stock-? WHERE id = ?", [
                         $number, $number, $number, $params[$key]['id']
+                    ]);*/
+                    $result = Db::execute('UPDATE ' . $prefix . "unishop_product SET real_sales = real_sales+?, stock = stock-? WHERE id = ?", [
+                        $number, $number, $params[$key]['id']
                     ]);
                 } else if ($params[$key]['use_spec'] == Product::SPEC_ON) {
                     $info = $productExtend->getBaseData($params[$key], $spec);
@@ -51,9 +54,13 @@ class Order
                     $search = '"stock":"' . $info['stock'] . '","value":["' . $spec . '"]';
                     $stock = $info['stock'] - $number;
                     $replace = '"stock":\"' . $stock . '\","value":["' . $spec . '"]';
-                    $sql = 'UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, stock = stock-?, real_sales = real_sales+? ,`specTableList` = REPLACE(specTableList,'$search','$replace') WHERE id = ?";
+                    /* $sql = 'UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, stock = stock-?, real_sales = real_sales+? ,`specTableList` = REPLACE(specTableList,'$search','$replace') WHERE id = ?";
                     $result = Db::execute($sql, [
                         $number, $number, $number, $params[$key]['id']
+                    ]);*/
+                    $sql = 'UPDATE ' . $prefix . "unishop_product SET stock = stock-?, real_sales = real_sales+? ,`specTableList` = REPLACE(specTableList,'$search','$replace') WHERE id = ?";
+                    $result = Db::execute($sql, [
+                        $number, $number, $params[$key]['id']
                     ]);
                     //}
 
@@ -75,8 +82,11 @@ class Order
             foreach ($extra['specNumber'] as $spec => $number) {
                 $result = 0;
                 if (is_numeric($spec) && $params[$key]['use_spec'] == Product::SPEC_OFF) {
-                    $result = Db::execute('UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, real_sales = real_sales+?, stock = stock-? WHERE id = ? AND stock = ?", [
+                   /* $result = Db::execute('UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, real_sales = real_sales+?, stock = stock-? WHERE id = ? AND stock = ?", [
                         $number, $number, $number, $params[$key]['id'], $params[$key]['stock']
+                    ]);*/
+                    $result = Db::execute('UPDATE ' . $prefix . "unishop_product SET real_sales = real_sales+?, stock = stock-? WHERE id = ? AND stock = ?", [
+                        $number, $number, $params[$key]['id'], $params[$key]['stock']
                     ]);
                 } else if ($params[$key]['use_spec'] == Product::SPEC_ON) {
                     $info = $productExtend->getBaseData($params[$key], $spec);
@@ -87,9 +97,13 @@ class Order
                     $search = '"stock":"' . $info['stock'] . '","value":["' . $spec . '"]';
                     $stock = $info['stock'] - $number;
                     $replace = '"stock":\"' . $stock . '\","value":["' . $spec . '"]';
-                    $sql = 'UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, real_sales = real_sales+?, stock = stock-?,`specTableList` = REPLACE(specTableList,'$search','$replace') WHERE id = ? AND stock = ?";
+                    /*$sql = 'UPDATE ' . $prefix . "unishop_product SET no_buy_yet = no_buy_yet+?, real_sales = real_sales+?, stock = stock-?,`specTableList` = REPLACE(specTableList,'$search','$replace') WHERE id = ? AND stock = ?";
                     $result = Db::execute($sql, [
                         $number, $number, $number, $params[$key]['id'], $params[$key]['stock']
+                    ]);*/
+                    $sql = 'UPDATE ' . $prefix . "unishop_product SET real_sales = real_sales+?, stock = stock-?,`specTableList` = REPLACE(specTableList,'$search','$replace') WHERE id = ? AND stock = ?";
+                    $result = Db::execute($sql, [
+                        $number, $number, $params[$key]['id'], $params[$key]['stock']
                     ]);
                     //}
 
@@ -186,6 +200,12 @@ class Order
             $orderPrice = bcadd($orderPrice, bcmul($productInfo['sales_price'], $numbers[$key], 2), 2);
             $score = bcadd($score, bcmul($productInfo['score'], $numbers[$key], 0), 0);
             $baseProductInfo[] = $productInfo;
+        }
+
+        $UserMD = new \app\common\model\User();
+        $userInfo = $UserMD->getRowById($extra['userId']);
+        if($userInfo['score'] - $score < 0){
+            throw new Exception('积分不购');
         }
 
         // 条件三

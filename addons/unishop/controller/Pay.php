@@ -310,7 +310,6 @@ class Pay extends Base
         }
 
         $UserMD = new \app\common\model\User();
-
         $userInfo = $UserMD->getRowById($order['user_id']);
         if($userInfo['score'] - $order['score'] < 0){
             $this->error('积分不购！', true);
@@ -323,8 +322,6 @@ class Pay extends Base
 
             Hook::add('paid_success', 'addons\\unishop\\behavior\\Order');
             Hook::listen('paid_success', $order, ['pay_type' => \addons\unishop\model\Order::PAY_SCORE]);
-
-            $this->
 
             Db::commit();
         } catch (Exception $e) {
