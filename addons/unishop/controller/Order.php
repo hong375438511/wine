@@ -93,6 +93,7 @@ class Order extends Base
     public function create()
     {
         $productId = $this->request->post('id', 0);
+        $number = $this->request->post('number', 0);
 
         try {
             $user_id = $this->auth->id;
@@ -103,7 +104,7 @@ class Order extends Base
                 $product = (new Product)->where(['id' => $productId, 'switch' => Product::SWITCH_ON, 'deletetime' => null])->find();
                 /** 产品基础数据 **/
                 $spec = $this->request->post('spec', '');
-                $productData[0] = $product->getDataOnCreateOrder($spec);
+                $productData[0] = $product->getDataOnCreateOrder($spec, $number);
             } else {
                 // 多个商品
                 $cart = $this->request->post('cart');
@@ -153,8 +154,9 @@ class Order extends Base
 
             foreach ($productData as &$product) {
                 $product['image'] = Config::getImagesFullUrl($product['image']);
-                $product['sales_price'] = round($product['sales_price'], 2);
-                $product['market_price'] = round($product['market_price'], 2);
+                unset($product['sales_price'],$product['market_price'],$product['sales']);
+                /*$product['sales_price'] = round($product['sales_price'], 2);
+                $product['market_price'] = round($product['market_price'], 2);*/
             }
 
             $this->success('', [

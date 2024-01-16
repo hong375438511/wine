@@ -199,7 +199,7 @@ class Address extends Base
      */
     public function area()
     {
-        $pid = $this->request->post('pid', 1);
+        $pid = $this->request->post('pid', 0);
         Cache::clear('area_pid_'.$pid);
         if (Cache::has('area_pid_'.$pid)) {
             $area = Cache::get('area_pid_'.$pid);

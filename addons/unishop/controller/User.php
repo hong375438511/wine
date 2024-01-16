@@ -324,5 +324,15 @@ class User extends Base
 
     }
 
-
+    /**
+     * @desc 获取用户信息
+     */
+    public function getUserInfo(){
+        $field = ['id', 'username', 'nickname', 'mobile', 'avatar', 'score'];
+        $userInfo = (new \app\common\model\User())->getRowById($this->auth->id,$field);
+        if(empty($userInfo)){
+            $this->error('请先登录');
+        }
+        $this->success('', $userInfo);
+    }
 }
