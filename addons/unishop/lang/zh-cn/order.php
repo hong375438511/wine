@@ -10,6 +10,7 @@ return [
     'Offline'          => '到货付款',
     'wxPay'            => '微信付款',
     'aliPay'           => '支付宝付',
+    'scorePay'           => '积分支付',
     'Please fill in the refund amount'           => '请填写退款金额',
     'Please select goods status'           => '请选择商品状态',
     'Please select goods'           => '请选择商品',

@@ -77,6 +77,13 @@ class Order extends Model
     const TYPE_REFUSE = 6; // 拒绝退款
     const TYPE_OFF = 9; // 订单关闭
 
+    protected  $stateList = [
+        1 => '待付款',
+        2 => '待发货',
+        3 => '待收货',
+        4 => '已收货',
+    ];
+
 
     /**
      * 格式化时间
@@ -141,6 +148,9 @@ class Order extends Model
                 break;
             case self::PAY_ALIPAY:
                 return __('aliPay');
+                break;
+            case self::PAY_SCORE:
+                return __('scorePay');
                 break;
         }
     }
@@ -360,7 +370,8 @@ class Order extends Model
         $result = $this
             ->with([
                 'products' => function($query) {
-                    $query->field('id,title,image,number,price,spec,order_id,product_id');
+                    //$query->field('id,title,image,number,price,spec,order_id,product_id');
+                    $query->field('id,title,image,number,score,spec,order_id,product_id');
                 },
                 'extend' => function($query) {
                     $query->field('order_id,express_number,express_company');
@@ -380,6 +391,8 @@ class Order extends Model
         foreach ($result as &$item) {
             $item->append(['order_id','state', 'refund_status_text']);
             $item = $item->toArray();
+
+            $item['state_text'] = isset($this->stateList[$item['state']]) ? $this->stateList[$item['state']] : '';
 
             $evaluate = array_column($item['evaluate'], 'product_id');
             $refundProducts = array_column($item['refund_products'], 'order_product_id');
@@ -404,6 +417,8 @@ class Order extends Model
                     $product['refund'] = false;
                 }
             }
+
+            unset($item['order_price'],$item['discount_price'],$item['delivery_price'],$item['total_price'],$item['have_commented'],$item['refund_status'],$item['had_refund']);
 
         }
 

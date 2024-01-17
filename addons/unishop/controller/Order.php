@@ -510,13 +510,13 @@ class Order extends Base
             ->where('status', '<>', \addons\unishop\model\Order::STATUS_CANCEL)
             ->where(function ($query) {
                 $query
+                    //->whereOr('refund_status', '>', \addons\unishop\model\Order::REFUND_STATUS_NONE)
                     ->whereOr([
                         'have_paid' => \addons\unishop\model\Order::PAID_NO,
                         'have_delivered' => \addons\unishop\model\Order::DELIVERED_NO,
                         'have_received' => \addons\unishop\model\Order::RECEIVED_NO,
-                        'have_commented' => \addons\unishop\model\Order::COMMENTED_NO
-                    ])
-                    ->whereOr('refund_status', '>', \addons\unishop\model\Order::REFUND_STATUS_NONE);
+                        //'have_commented' => \addons\unishop\model\Order::COMMENTED_NO
+                    ]);
             })
             ->field('have_paid,have_delivered,have_received,have_commented,refund_status,had_refund')
             ->select();
@@ -525,8 +525,8 @@ class Order extends Base
             'unpaid' => 0,
             'undelivered' => 0,
             'unreceived' => 0,
-            'uncomment' => 0,
-            'refund' => 0
+            /*'uncomment' => 0,
+            'refund' => 0*/
         ];
         foreach ($list as $item) {
             switch (true) {
@@ -567,7 +567,7 @@ class Order extends Base
      * @ApiReturnParams  (name="delivery_price", type="string", description="运费多少钱")
      * @ApiReturnParams  (name="total_price", type="string", description="订单实价")
      * @ApiReturnParams  (name="pay_type", type="integer", description="支付类型")
-     * @ApiReturnParams  (name="id", type="string", description="下单ip")
+     * @ApiReturnParams  (name="ip", type="string", description="下单ip")
      * @ApiReturnParams  (name="remark", type="string", description="订单备注")
      * @ApiReturnParams  (name="have_paid", type="integer", description="是否支付")
      * @ApiReturnParams  (name="have_delivered", type="integer", description="是否发货")
@@ -578,7 +578,7 @@ class Order extends Base
      * @ApiReturnParams  (name="products[].title", type="string", description="商品名称")
      * @ApiReturnParams  (name="products[].image", type="string", description="商品图片")
      * @ApiReturnParams  (name="products[].number", type="integer", description="商品数量")
-     * @ApiReturnParams  (name="products[].price", type="string", description="商品价钱")
+     * @ApiReturnParams  (name="products[].score", type="string", description="商品积分")
      * @ApiReturnParams  (name="products[].spec", type="string", description="选中的规格")
      * @ApiReturnParams  (name="products[].order_product_id", type="integer", description="订单商品id")
      * @ApiReturnParams  (name="products[].evaluate", type="integer", description="是否已评价")
@@ -593,8 +593,8 @@ class Order extends Base
      */
     public function detail()
     {
-        echo $order_id = $this->request->post('order_id', 0);
-        echo $order_id = \addons\unishop\extend\Hashids::decodeHex($order_id);
+        $order_id = $this->request->post('order_id', 0);
+        $order_id = \addons\unishop\extend\Hashids::decodeHex($order_id);
 
         try {
             $orderModel = new \addons\unishop\model\Order();
@@ -617,7 +617,7 @@ class Order extends Base
 
                 // 快递单号
                 $order['express_number'] = $order['extend']['express_number'];
-                $order['express_company'] = !empty($order['extend']['express_company']) ? $order['extend']['express_company'] : '快递单号';
+                $order['express_company'] = !empty($order['extend']['express_company']) ? $order['extend']['express_company'] : '';
 
                 if($order['is_self_pickup']){
                     $order['delivery']  = [];
@@ -639,15 +639,16 @@ class Order extends Base
                 $evaluate = array_column($order['evaluate'], 'product_id');
                 foreach ($order['products'] as &$product) {
                     $product['image'] = Config::getImagesFullUrl($product['image']);
-                    if (in_array($product['id'], $evaluate)) {
+                   /* if (in_array($product['id'], $evaluate)) {
                         $product['evaluate'] = true;
                     } else {
                         $product['evaluate'] = false;
-                    }
+                    }*/
                 }
 
                 unset($order['evaluate']);
                 unset($order['extend']);
+                unset($order['order_price'],$order['discount_price'],$order['delivery_price'],$order['total_price'],$order['have_commented']);
             }
 
         } catch (Exception $e) {
@@ -906,7 +907,7 @@ class Order extends Base
 
         $this->success('', [
             'message' => $list,
-            'company' => $data['result']['ExpressName'] ?? '快递单号'
+            'company' => $data['result']['ExpressName'] ?? ''
         ]);
     }
 }
