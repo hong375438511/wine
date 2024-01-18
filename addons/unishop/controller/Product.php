@@ -161,7 +161,7 @@ class Product extends Base
             ->page($page, $pagesize)
             ->order($by, $desc)
             //->field('id,title,image,score,sales_price,sales,real_sales')
-            ->field('id,title,image,score')
+            ->field('id,title,image,score,stock')
             ->select();
 
         if ($result) {

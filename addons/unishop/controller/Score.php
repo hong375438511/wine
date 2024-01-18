@@ -20,7 +20,7 @@ class Score extends Base{
      * @ApiParams   (name="by", type="string", required=true, description="排序字段")
      * @ApiParams   (name="desc", type="string", required=true, description="排序desc,asc")
      * @ApiReturn   ({"code":1,"msg":"","data":[]})
-     * @ApiReturnParams  (name="score", type="string", description="积分")
+     * @ApiReturnParams  (name="score", type="string", description="变动积分")
      * @ApiReturnParams  (name="before", type="integer", description="变动前")
      * @ApiReturnParams  (name="after", type="integer", description="变动后")
      * @ApiReturnParams  (name="memo", type="string", description="备注")

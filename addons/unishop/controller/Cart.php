@@ -36,6 +36,7 @@ class Cart extends Base
      *
      * @ApiReturnParams  (name="market_price", type="string", description="市场价")
      * @ApiReturnParams  (name="sales_price", type="string", description="销售价")
+     * @ApiReturnParams  (name="score", type="string", description="商品积分")
      * @ApiReturnParams  (name="stock", type="integer", description="库存")
      * @ApiReturnParams  (name="sales", type="integer", description="销量")
      * @ApiReturnParams  (name="image", type="string", description="图片")
@@ -55,7 +56,7 @@ class Cart extends Base
         $carts = (new CartModel)->where(['user_id' => $this->auth->id])
             ->with([
                 'product' => function ($query) {
-                    $query->field(['id', 'image', 'title', 'specTableList','sales','market_price','sales_price','stock','use_spec', 'switch']);
+                    $query->field(['id', 'image', 'title', 'specTableList','sales','market_price','sales_price','stock','use_spec', 'switch', 'score']);
                 }
             ])
             ->order(['createtime' => 'desc'])
@@ -92,10 +93,12 @@ class Cart extends Base
             $tempData['cart_id'] = $item['id'];
             $tempData['spec'] = $item['spec'];
             $tempData['number'] = $item['number'];
+            $tempData['score'] = $tempData['score'];
+            unset($tempData['sales_price'],$tempData['market_price']);
 
             $tempData['image'] = Config::getImagesFullUrl($oldData['image']);
-            $tempData['oldPrice'] = round($oldData['sales_price'], 2);
-            $tempData['nowPrice'] = round($tempData['sales_price'], 2);
+            /*$tempData['oldPrice'] = round($oldData['sales_price'], 2);
+            $tempData['nowPrice'] = round($tempData['sales_price'], 2);*/
 
             $tempData['product_id'] = Hashids::encodeHex($item['product_id']);
 
@@ -139,9 +142,9 @@ class Cart extends Base
         $oldCart = $cartModel->find();
 
         if ($oldCart) {
-            $this->error('商品已存在购物车');
-//            $oldCart->number++;
-//            $result = $oldCart->save();
+//            $this->error('商品已存在购物车');
+            $oldCart->number++;
+            $result = $oldCart->save();
         } else {
             $cartModel->user_id = $user_id;
             $cartModel->product_id = $id;

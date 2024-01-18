@@ -108,7 +108,8 @@ class Order extends Base
             } else {
                 // 多个商品
                 $cart = $this->request->post('cart');
-                $carts = (new \addons\unishop\model\Cart)
+                $CartMD = (new \addons\unishop\model\Cart);
+                $carts = $CartMD
                     ->whereIn('id', $cart)
                     ->with(['product'])
                     ->order(['id' => 'desc'])

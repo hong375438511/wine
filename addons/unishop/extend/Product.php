@@ -46,8 +46,8 @@ class Product
             if ($key) {
                 $data = $product[$key];
             } else {
-                $data['market_price'] = $product['market_price'];
-                $data['sales_price'] = $product['sales_price'];
+                isset($product['market_price']) && $data['market_price'] = $product['market_price'];
+                isset($product['sales_price']) &&  $data['sales_price'] = $product['sales_price'];
                 $data['stock'] = $product['stock'];
                 $data['sales'] = $product['sales'];
                 $data['image'] = $product['image'];
