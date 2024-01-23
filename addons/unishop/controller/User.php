@@ -310,6 +310,7 @@ class User extends Base
             $userInfo['mobile'] = $user->mobile;
             $userInfo['avatar'] = \addons\unishop\model\Config::getImagesFullUrl($user->avatar);
             $userInfo['username'] = $user->username;
+            $userInfo['score'] = $user->score;
 
             $this->auth->direct($userInfo['id']);
             if ($this->auth->isLogin()) {
